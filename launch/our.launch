@@ -1,0 +1,15 @@
+<launch>
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
+
+    <node pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="log">
+    </node>
+
+    <node pkg="rtabmap_ros" type="rtabmap" name="rtabmap" output="log">
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" output="log">
+    </node>
+<!-->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    </node> -->
+</launch>   
