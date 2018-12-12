@@ -1,0 +1,44 @@
+<launch>
+    <!-- get json files from here: https://github.com/IntelRealSense/librealsense/wiki/D400-Series-Visual-Presets -->
+
+    <!-- <arg name="standard_width"  value="1280"/>
+    <arg name="standard_height" value="720"/> -->
+    <arg name="standard_width"  value="1280"/>
+    <arg name="standard_height" value="720"/>
+    <!-- valid fps: 6, 15, ... -->
+    <arg name="standard_fps"    value="6"/>
+
+    <group ns="camera">
+        <include file="$(find thesis)/launch/includes/nodelet.launch.xml">
+            <arg name="serial_no"                value=""/>
+            <arg name="json_file_path"           value="$(find thesis)/launch/config/LowResHighAccuracyPreset.json"/>
+
+            <arg name="enable_pointcloud"        value="true"/>
+            <arg name="enable_sync"              value="true"/>
+            <arg name="align_depth"              value="true"/>
+
+            <arg name="depth_width"              value="$(arg standard_width)"/>
+            <arg name="depth_height"             value="$(arg standard_height)"/>
+            <arg name="enable_depth"             value="true"/>
+
+            <arg name="color_width"              value="$(arg standard_width)"/>
+            <arg name="color_height"             value="$(arg standard_height)"/>
+            <arg name="enable_color"             value="true"/>
+
+            <arg name="infra1_width"             value="$(arg standard_width)"/>
+            <arg name="infra1_height"            value="$(arg standard_height)"/>
+            <arg name="enable_infra1"            value="true"/>
+
+            <arg name="infra2_width"             value="$(arg standard_width)"/>
+            <arg name="infra2_height"            value="$(arg standard_height)"/>
+            <arg name="enable_infra2"            value="true"/>
+            
+            <arg name="depth_fps"                value="$(arg standard_fps)"/>
+            <arg name="infra1_fps"               value="$(arg standard_fps)"/>
+            <arg name="infra2_fps"               value="$(arg standard_fps)"/>
+            <arg name="color_fps"                value="$(arg standard_fps)"/>
+
+            <arg name="tf_prefix"                value=""/>
+        </include>
+    </group>
+</launch>

@@ -1,14 +1,15 @@
+<?xml version = "1.0"?>
 <launch>
-    <arg name="localization"      default="false"/>
-    <arg unless="$(arg localization)" name="rtabmap_args"  default="--delete_db_on_start"/>
-    <arg name="database_path"     default="rtabmap.db"/>
-    <arg name="args"              default=""/>   
-    <arg name="wait_for_transform"  default="0.2"/> 
-    
+    <arg name="localization"                                  default="false"/>
+    <arg unless="$(arg localization)" name="rtabmap_args"     default="--delete_db_on_start"/>
+    <arg name="database_path"                                 default="rtabmap.db"/>
+    <arg name="args"                                          default=""/>   
+    <arg name="wait_for_transform"                            default="0.2"/> 
+    <arg name="controller"                                    default="false"/>
+
   <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="footprint_broadcaster" args="0 0 0 0 0 0 1 odom camera_link" /> -->
   <!-- Navigation stuff (move_base) 
   <include file="$(find turtlebot_navigation)/launch/includes/move_base_rtab.launch.xml"/> -->
-
 
   <!-- Mapping -->
     <group ns="rtabmap">
@@ -82,5 +83,22 @@
             <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
         </node>
+    </group>
+
+    <group if="$(arg controller)">
+        <group ns="controller">
+	        <node name="ps3joy" pkg="ps3joy" type="ps3joy.py" output="screen"/>
+        </group>
+        <group ns="kobuki">
+            <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
+            <include file="$(find turtlebot_teleop)/launch/ps3_teleop.launch" />
+        </group>
+    </group>
+
+    <group unless="$(arg controller)">
+        <group ns="kobuki">
+            <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
+            <include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch" />
+        </group>
     </group>
 </launch>
