@@ -7,19 +7,20 @@
     <arg name="wait_for_transform"                            default="0.2"/> 
     <arg name="controller"                                    default="false"/>
 
-  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="footprint_broadcaster" args="0 0 0 0 0 0 1 odom camera_link" /> -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="0.15 0.015 0.23 0 0 0 1 base_link camera_link" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="footprint_broadcaster" args="0 0 0 0 0 0 1 base_footprint base_link" />
   <!-- Navigation stuff (move_base) 
   <include file="$(find turtlebot_navigation)/launch/includes/move_base_rtab.launch.xml"/> -->
 
   <!-- Mapping -->
     <group ns="rtabmap">
-        <node pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="screen">
+        <node pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="log">
             <remap from="rgb/image"       to="/camera/color/image_raw"/>
             <remap from="depth/image"     to="/camera/depth/image_rect_raw"/>
             <remap from="rgb/camera_info" to="/camera/color/camera_info"/>
             <remap from="rgbd_image"      to="rgbd_image"/>
             <remap from="odom"            to="rgbd_odom"/>
-                <param name="frame_id"                    type="string" value="camera_link"/>
+                <param name="frame_id"                    type="string" value="base_footprint"/>
                 <param name="odom_frame_id"               type="string" value="odom"/>
                 <param name="publish_tf"                  type="bool"   value="true"/>
                 <param name="ground_truth_frame_id"       type="string" value=""/>
@@ -42,11 +43,10 @@
                 <param name="Reg/Force3DoF"             type="bool" value="true"/>
         </node>
 
-
-        <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="$(arg args)">
+        <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="log" args="$(arg args)">
             <param name="database_path"       type="string" value="$(arg database_path)"/>
 
-            <param name="frame_id"            type="string" value="camera_link"/>
+            <param name="frame_id"            type="string" value="base_footprint"/>
             <param name="odom_frame_id"       type="string" value="odom"/>
             <param name="map_frame_id"         type="string" value="map"/>
             <param name="wait_for_transform_duration"  type="double"   value="$(arg wait_for_transform)"/>
@@ -87,7 +87,7 @@
 
     <group if="$(arg controller)">
         <group ns="controller">
-	        <node name="ps3joy" pkg="ps3joy" type="ps3joy.py" output="screen"/>
+	        <node name="ps3joy" pkg="ps3joy" type="ps3joy.py" output="log"/>
         </group>
         <group ns="kobuki">
             <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
@@ -100,5 +100,54 @@
             <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
             <include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch" />
         </group>
+    </group>
+
+<!-- Kalman Filter -->
+    <group ns="Kalman">
+        <node name="ekf_odom" pkg="robot_localization" type="ekf_localization_node" output="log" args="$(arg args)">
+
+            <param name="frequency" value="30"/>
+            <param name="two_d_mode" value="true"/>                         <!-- SUPER IMPORTANT FOR 2D NAVIGATION !!!!! -->
+            <param name="map_frame" value="map"/>
+            <param name="odom_frame" value="odom"/>
+            <param name="base_link_frame" value="base_link"/>
+            <param name="world_frame" value="odom"/>
+
+            <param name="odom0" value="/kobuki/odom"/> 
+            <param name="odom1" value="/rtabmap/rgbd_odometry"/>     
+
+            <rosparam param="odom0_config"> <!--wheels-->
+                [true, true, false,         <!-- X, Y, Z -->
+                false, false, true,         <!-- roll, pitch, yaw -->
+                true, false, false,         <!-- linear velocities -->
+                false, false, true,         <!-- angular velocities -->
+                false, false, false]        <!-- accelarations -->
+            </rosparam>
+            <rosparam param="odom1_config"> <!-- rgbd -->
+                [true, true, false,         <!-- X, Y, Z -->                <!-- not sure about z because if we set force3D to true, we force 2D slam -->
+                false, false, true,         <!-- roll, pitch, yaw -->
+                true, true, false,         <!-- linear velocities -->
+                false, false, true,         <!-- angular velocities -->
+                false, false, false]        <!-- accelarations -->
+            </rosparam>
+            <rosparam param="initial_estimate_covariance">
+            [0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0,05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0.06, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0.03, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0.03, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0.06, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0.025, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0.025, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0.04, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0.01, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.01, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.02, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.01, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.01, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1]
+            </rosparam>
+            
+        </node>
     </group>
 </launch>
