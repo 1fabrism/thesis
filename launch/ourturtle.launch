@@ -78,13 +78,14 @@
             <param name="Optimizer/Slam2D"             type="string" value="true"/>
             <param name="Reg/Force3DoF"                type="string" value="true"/>  
 
-            <!-- localization mode -->
+<!-- Localization mode -->
             <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
         </node>
     </group>
 
+<!-- Kobuki -->
     <group if="$(arg controller)">
         <group ns="controller">
 	        <node name="ps3joy" pkg="ps3joy" type="ps3joy.py" output="log"/>
