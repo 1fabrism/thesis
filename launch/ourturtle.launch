@@ -19,7 +19,7 @@
             <remap from="depth/image"     to="/camera/depth/image_rect_raw"/>
             <remap from="rgb/camera_info" to="/camera/color/camera_info"/>
             <remap from="rgbd_image"      to="rgbd_image"/>
-            <remap from="odom"            to="rgbd_odom"/>
+            <remap from="odom"            to="rgbd_odometry"/>
                 <param name="frame_id"                    type="string" value="base_footprint"/>
                 <param name="odom_frame_id"               type="string" value="odom"/>
                 <param name="publish_tf"                  type="bool"   value="true"/>
