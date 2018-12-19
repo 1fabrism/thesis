@@ -58,7 +58,7 @@
             <remap from="depth/image"     to="/camera/depth/image_rect_raw"/>
             <remap from="rgb/camera_info" to="/camera/color/camera_info"/>
             <remap from="rgbd_image"      to="rgbd_image"/>
-            <remap from="odom"            to="rgbd_odom"/>
+            <remap from="odom"            to="rgbd_odometry"/>
         
             <!-- output -->
             <remap from="grid_map" to="/map"/>
@@ -78,14 +78,13 @@
             <param name="Optimizer/Slam2D"             type="string" value="true"/>
             <param name="Reg/Force3DoF"                type="string" value="true"/>  
 
-<!-- Localization mode -->
+            <!-- localization mode -->
             <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
         </node>
     </group>
 
-<!-- Kobuki -->
     <group if="$(arg controller)">
         <group ns="controller">
 	        <node name="ps3joy" pkg="ps3joy" type="ps3joy.py" output="log"/>
