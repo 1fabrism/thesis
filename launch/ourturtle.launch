@@ -127,7 +127,7 @@
             <rosparam param="odom1_config"> <!-- rgbd -->
                 [true, true, false,         <!-- X, Y, Z -->                <!-- not sure about z because if we set force3D to true, we force 2D slam -->
                 false, false, true,         <!-- roll, pitch, yaw -->
-                true, true, false,         <!-- linear velocities -->
+                true, true, false,          <!-- linear velocities -->
                 false, false, true,         <!-- angular velocities -->
                 false, false, false]        <!-- accelarations -->
             </rosparam>
