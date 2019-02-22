@@ -34,7 +34,7 @@
             <param name="subscribe_rgbd"              type="bool"   value="false"/>
             <!-- guess frame id might be useful to use encoder info -->
             <param name="guess_frame_id"              type="string" value=""/>
-            <param name="guess_min_translation"       type="double" value="0"0/>
+            <param name="guess_min_translation"       type="double" value="0"/>
             <param name="guess_min_rotation"          type="double" value="0"/>
 
             <!-- After 20 frames of wich odom was not able to find, reset map. New map is later merged with old one if loopback is found -->
@@ -91,6 +91,7 @@
 <!-- TurtleBot Launch -->
     <group ns="kobuki">
         <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+            <param name="use_imu_heading"   type="bool" value="true"/>
     </group>
         <group if="$(arg controller)">
             <group ns="controller">
@@ -117,21 +118,30 @@
             <param name="base_link_frame" value="base_link"/>
             <param name="world_frame" value="odom"/>
 
-            <param name="odom0" value= 
+            <param name="odom0" value="/kobuki/odom"/> 
+            <param name="odom1" value="/rtabmap/rgbd_odometry"/> 
+            <param name="odom2" value="/kobuki/mobile_base/sensors/imu_data"/>
 
             <rosparam param="odom0_config"> <!--wheels-->
                 [true, true, false,         <!-- X, Y, Z -->
                 false, false, true,         <!-- roll, pitch, yaw -->
                 true, false, false,         <!-- linear velocities -->
                 false, false, true,         <!-- angular velocities -->
-                false, false, false]        <!-- accelarations -->
+                false, false, false]        <!-- accelerations -->
             </rosparam>
             <rosparam param="odom1_config"> <!-- rgbd -->
                 [true, true, false,         <!-- X, Y, Z -->                <!-- not sure about z because if we set force3D to true, we force 2D slam -->
                 false, false, true,         <!-- roll, pitch, yaw -->
                 true, true, false,          <!-- linear velocities -->
                 false, false, true,         <!-- angular velocities -->
-                false, false, false]        <!-- accelarations -->
+                false, false, false]        <!-- accelerations -->
+            </rosparam>
+            <rosparam param="odom2_config"> <!--gyro-->
+                [false, false, false,         <!-- X, Y, Z -->
+                false, false, true,         <!-- roll, pitch, yaw -->
+                false, false, false,         <!-- linear velocities -->
+                false, false, true,         <!-- angular velocities -->
+                false, false, false]        <!-- accelerations -->
             </rosparam>
             <rosparam param="initial_estimate_covariance">
             [0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
