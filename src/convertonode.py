@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-# license removed for brevity
+
+"""
+USELESS THROW THIS IN THE GARBAGE WHERE IT BELONGS
+USELESS THROW THIS IN THE GARBAGE WHERE IT BELONGS
+USELESS THROW THIS IN THE GARBAGE WHERE IT BELONGS
+USELESS THROW THIS IN THE GARBAGE WHERE IT BELONGS
+USELESS THROW THIS IN THE GARBAGE WHERE IT BELONGS
+"""
+
+
+
 import rospy
 from std_msgs.msg import Header
 from sensor_msgs.msg import Imu
@@ -7,7 +17,7 @@ from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 from nav_msgs.msg import Odometry
 
 def talker(data):
-    pub = rospy.Publisher('/thesis/kobuki/imu_odom', Odometry, queue_size=10)
+    pub = rospy.Publisher('/thesis/kobuki/imu_odom', Odometry)
     #rospy.init_node('talker', anonymous=True)
     #rate = rospy.Rate(0) # as fast as possible
     odom = Odometry()

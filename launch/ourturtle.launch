@@ -91,7 +91,7 @@
 <!-- TurtleBot Launch -->
     <group ns="kobuki">
         <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
-            <param name="use_imu_heading"   type="bool" value="true"/>
+            <param name="/kobuki/mobile_base/use_imu_heading"   type="bool" value="false"/>
     </group>
         <group if="$(arg controller)">
             <group ns="controller">
@@ -120,12 +120,12 @@
 
             <param name="odom0" value="/kobuki/odom"/> 
             <param name="odom1" value="/rtabmap/rgbd_odometry"/> 
-            <param name="odom2" value="/kobuki/mobile_base/sensors/imu_data"/>
+            <param name="imu0" value="/kobuki/mobile_base/sensors/imu_data"/>
 
             <rosparam param="odom0_config"> <!--wheels-->
                 [true, true, false,         <!-- X, Y, Z -->
                 false, false, true,         <!-- roll, pitch, yaw -->
-                true, false, false,         <!-- linear velocities -->
+                true, true, false,         <!-- linear velocities -->       <!-- Set ydot to true to let the wheel encoders add the 0 lateral speed into the filter -->
                 false, false, true,         <!-- angular velocities -->
                 false, false, false]        <!-- accelerations -->
             </rosparam>
@@ -136,10 +136,10 @@
                 false, false, true,         <!-- angular velocities -->
                 false, false, false]        <!-- accelerations -->
             </rosparam>
-            <rosparam param="odom2_config"> <!--gyro-->
-                [false, false, false,         <!-- X, Y, Z -->
+            <rosparam param="imu0_config">   <!--gyro-->
+                [false, false, false,       <!-- X, Y, Z -->
                 false, false, true,         <!-- roll, pitch, yaw -->
-                false, false, false,         <!-- linear velocities -->
+                false, false, false,        <!-- linear velocities -->
                 false, false, true,         <!-- angular velocities -->
                 false, false, false]        <!-- accelerations -->
             </rosparam>            
@@ -148,8 +148,5 @@
 
 <!-- RViz -->
     <node type="rviz" name="rviz" pkg="rviz" args="-d /home/marco/catkin_ws/src/thesis/config/ourviz.rviz" />
-
-<!-- Custom Nodes -->
-    <node type="convertonode.py" name="kobukiconvert" pkg="thesis"/>
-
+    
 </launch>
