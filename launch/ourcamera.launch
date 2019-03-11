@@ -1,16 +1,16 @@
 <launch>
   <arg name="serial_no"           default=""/>
-  <arg name="json_file_path"      default=""/>
+  <arg name="json_file_path"      default="/home/marco/catkin_ws/src/thesis/config/HighResHighAccuracyPreset.json"/>
   <arg name="camera"              default="camera"/>
   <arg name="tf_prefix"           default="$(arg camera)"/>
   
-  <arg name="width"               default="640"/>
-  <arg name="height"              default="480"/>
+  <arg name="width"               default="1280"/>
+  <arg name="height"              default="720"/>
   <arg name="fps"                 default="30"/>
 
   <arg name="fisheye_width"       default="$(arg width)"/>
   <arg name="fisheye_height"      default="$(arg height)"/>
-  <arg name="enable_fisheye"      default="true"/>
+  <arg name="enable_fisheye"      default="false"/>
 
   <arg name="depth_width"         default="$(arg width)"/>
   <arg name="depth_height"        default="$(arg height)"/>
@@ -35,13 +35,13 @@
   <arg name="color_fps"           default="$(arg fps)"/>
   <arg name="gyro_fps"            default="1000"/>
   <arg name="accel_fps"           default="1000"/>
-  <arg name="enable_imu"          default="true"/>
+  <arg name="enable_imu"          default="false"/>
 
   <arg name="enable_pointcloud"         default="false"/>
   <arg name="pointcloud_texture_stream" default="RS2_STREAM_COLOR"/>
   <arg name="pointcloud_texture_index"  default="0"/>
 
-  <arg name="enable_sync"         default="false"/>
+  <arg name="enable_sync"         default="true"/>
   <arg name="align_depth"         default="false"/>
 
   <arg name="filters"             default=""/>
