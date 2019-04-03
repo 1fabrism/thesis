@@ -1,11 +1,11 @@
 <launch>
   <arg name="serial_no"           default=""/>
-  <arg name="json_file_path"      default="/home/marco/catkin_ws/src/thesis/config/HighResHighAccuracyPreset.json"/>
+  <arg name="json_file_path"      default="/home/marco/catkin_ws/src/thesis/config/MidResHighAccuracyPreset.json"/> <!-- Use lowres to ensure rgbdodom is fast enough (<100ms)-->
   <arg name="camera"              default="camera"/>
   <arg name="tf_prefix"           default="$(arg camera)"/>
   
-  <arg name="width"               default="1280"/>
-  <arg name="height"              default="720"/>
+  <arg name="width"               default="640"/> <!-- 960x540, 640x480, 480x270, 424x240 -->
+  <arg name="height"              default="480"/>
   <arg name="fps"                 default="30"/>
 
   <arg name="fisheye_width"       default="$(arg width)"/>
