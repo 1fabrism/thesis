@@ -62,7 +62,7 @@
             <param name="frame_id"            type="string" value="base_footprint"/>
             <param name="odom_frame_id"       type="string" value=""/>
             <param name="map_frame_id"         type="string" value="map"/>
-            <param name="publish_tf"                  type="bool"   value="false"/>
+            <param name="publish_tf"                  type="bool"   value="true"/>
             <param name="wait_for_transform_duration"  type="double"   value="0.2"/>
             <param name="subscribe_depth"     type="bool"   value="true"/>
             <param name="subscribe_scan"      type="bool"   value="false"/>
@@ -130,6 +130,7 @@
             <param name="odom0" value="/kobuki/odom"/> 
             <param name="odom1" value="/rtabmap/rgbd_odometry"/> 
             <param name="imu0" value="/kobuki/mobile_base/sensors/imu_data"/>
+            <param name="pose0" value="/hedge_pose"/> 
 
             <rosparam param="odom0_config"> <!--wheels-->
                 [false, false, false,         <!-- X, Y, Z -->                <!-- Set X and Y to false because they're not primary sources (just integrated from velocities) -->
@@ -151,26 +152,7 @@
                 false, false, false,        <!-- linear velocities -->
                 false, false, true,         <!-- angular velocities -->
                 false, false, false]        <!-- accelerations -->
-            </rosparam>            
-        </node>
-        <node name="ekf_map" pkg="robot_localization" type="ekf_localization_node" clear_params="true" output="log">
-            <param name="frequency" value="10"/>
-            <param name="two_d_mode" value="true"/>                         <!-- SUPER IMPORTANT FOR 2D NAVIGATION !!!!! -->
-            <param name="map_frame" value="map"/>
-            <param name="odom_frame" value="odom"/>
-            <param name="base_link_frame" value="base_footprint"/>
-            <param name="world_frame" value="map"/>
-
-            <param name="transform_time_offset" value="0.1"/> 
-            <param name="smooth_lagged_data" value="true"/> 
-            <param name="dynamic_process_noise_covariance" value="false"/>
-
-            <param name="pose0" value="/hedge_pose"/> 
-            <param name="pose1" value="/rtabmap/localization_pose"/> 
-<!-- # Since rtabmap is more likely to fail than the beacons, you might want to treat the beacons
-# as a primary source, and set pose1_differential: true
-# In that case, set x', y' and yaw' to true, and the rest to false! -->
-
+            </rosparam>  
             <rosparam param="pose0_config"> <!--marvelmind-->
                 [true,  true,  false,
                false, false, false,
@@ -179,16 +161,7 @@
                false, false, false]        
             </rosparam>
             <!-- poseN_rejection_threshold: (YOU MIGHT WANT THIS. If it's above the stated threshold value, the EKF will ignore the reading) (Defaults to numeric_limits<double>::max()) -->
-            <param name="pose0_rejection_threshold" value="3"/>
-
-            <rosparam param="pose1_config"> <!-- rtabmap -->
-                [true,  true, false,
-               false, false, true,
-               false, false, false,
-               false, false, false,
-               false, false, false]
-            </rosparam>          
-            <param name="pose1_rejection_threshold" value="2"/> 
+            <param name="pose0_rejection_threshold" value="3"/>          
         </node>
     </group>
 
